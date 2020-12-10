@@ -538,7 +538,7 @@ void Stage::SetItem(PlatForm* nplat)
 	for (int i = 0; i < APPLENUMBER; i++)
 	{
 		//랜덤 위치  
-        random_platform = RandomHelper::random_int(0, 9);
+        random_platform = RandomHelper::random_int(0, STAGEPLATFORMMAX - 1);
         apple_pos_accum[i] = random_platform;
 
 		////중복 위치 방지
