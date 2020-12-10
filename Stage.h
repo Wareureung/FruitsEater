@@ -56,7 +56,6 @@ public:
     int random_platform;
     int platform_down_state;
 
-    int place_platform_number;
     int go_down_platform_first;
     int go_down_platform_second;
 

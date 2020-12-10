@@ -535,14 +535,10 @@ void Stage::SetItem(PlatForm* nplat)
     for(int i=0; i<5; i++)
         apple_pos_accum[i] = 50;
 
-    //랜덤 난수 발생
-    srand(time(NULL));
 	for (int i = 0; i < APPLENUMBER; i++)
 	{
-        place_platform_number = STAGEPLATFORMMAX;
-
 		//랜덤 위치  
-        random_platform = rand() % place_platform_number + 0;
+        random_platform = RandomHelper::random_int(0, 9);
         apple_pos_accum[i] = random_platform;
 
 		////중복 위치 방지
@@ -727,19 +723,9 @@ void Stage::SetStage01()
 void Stage::RandomStageMaker()
 {
     RePlace(STAGEPLATFORMMAX, random_x, random_y, platform, 1);
-    ////delay
-    //for (int i = 0; i < 500000000; i++)
-    //{
-    //    if (i >= 500000000)
-    //        i = 5000000000;
-    //}
+
     RePlace(STAGEPLATFORMMAX, random_x, random_y, platform2, 2);
-    ////delay
-    //for (int i = 0; i < 500000000; i++)
-    //{
-    //    if (i >= 500000000)
-    //        i = 5000000000;
-    //}
+
     RePlace(STAGEPLATFORMMAX, random_x, random_y, platform3, 3);
 }
 
@@ -759,12 +745,9 @@ void Stage::RePlace(int num, int* platform_x, int* platform_y, PlatForm* plat_, 
         platform_y[i] = 0;
     }
 
-    //srand(time(NULL));
-    
     //random    
     for (int i = 0; i < num;)
     {
-        //random_platform_x = rand() % 14 + 2;
         random_platform_x = RandomHelper::random_int(2, 14);
 
         if ((random_platform_x >= 2 && random_platform_x <= 5) && a_place_num < 4)
@@ -799,7 +782,6 @@ void Stage::RePlace(int num, int* platform_x, int* platform_y, PlatForm* plat_, 
 
     for (int i = 0; i < num; )
     {
-        //random_platform_y = rand() % 33 + 3;
         random_platform_y = RandomHelper::random_int(3, 33);
 
         if ((random_platform_x >= 3 && random_platform_x <= 13) && a_place_num < 11)
