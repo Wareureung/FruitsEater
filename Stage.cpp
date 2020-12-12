@@ -166,9 +166,9 @@ void Stage::AboutTouch()
 bool Stage::onTouchBegan(Touch* touch, Event* event)
 {
     //터치하면 점프 (바닥, 플랫폼 충돌상태 / 스테이지 바뀌는중 확인)
-    if (mydata.GetAllocateStageScene() < 2)
+    if (mydata.GetDoubleJumpUnLock())
     {
-        if ((me.isground || me.isplatform) && stage_change && me.double_jump < 3)
+        if (stage_change && me.double_jump < 3)
         {
             me.double_jump++;
             me.Jump();
@@ -177,7 +177,7 @@ bool Stage::onTouchBegan(Touch* touch, Event* event)
     }
     else
     {
-        if (stage_change && me.double_jump < 3)
+        if ((me.isground || me.isplatform) && stage_change && me.double_jump < 3)
         {
             me.double_jump++;
             me.Jump();
@@ -224,6 +224,15 @@ void Stage::SetStartValue()
 {
     //스테이지 확인
     stage_number = mydata.GetAllocateStageScene();
+
+    //더블 점프 잠금해제    
+    if (mydata.GetAllocateStageScene() == 2 && !mydata.GetDoubleJumpUnLock())
+    {
+        //다른 스케줄 정지시키고
+        //여기에 스케줄로 더블 점프 잠금해제 된거 표시해야함
+        
+        mydata.SetDoubleJumpUnLock();
+    }
 
     //시작 전 타이머
     start_timer = 3;
@@ -384,6 +393,8 @@ void Stage::CrushCheck()
                 {
                     //sound
                     gmsound.EatSound();
+                    //vibrate
+                    Device::vibrate(0.1f);
                     //아이템 이펙트
                     apple[i].EatAnimation(apple[i].CheckItemPosX(), apple[i].CheckItemPosY());
                     apple[i].item_effectsp->setScale(2);
