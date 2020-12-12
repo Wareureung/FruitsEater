@@ -784,21 +784,21 @@ void Stage::RePlace(int num, int* platform_x, int* platform_y, PlatForm* plat_, 
     {
         random_platform_y = RandomHelper::random_int(3, 33);
 
-        if ((random_platform_x >= 3 && random_platform_x <= 13) && a_place_num < 11)
+        if ((random_platform_y >= 3 && random_platform_y <= 13) && a_place_num < 4)//11
         {
             platform_y[i] = random_platform_y;
             a_place_num++;
             allock_turn++;
             i++;
         }
-        else if ((random_platform_x >= 14 && random_platform_x <= 23) && b_place_num < 10)
+        else if ((random_platform_y >= 14 && random_platform_y <= 23) && b_place_num < 5)//10
         {
             platform_y[i] = random_platform_y;
             b_place_num++;
             allock_turn++;
             i++;
         }
-        else if ((random_platform_x >= 24 && random_platform_x <= 33) && c_place_num < 10)
+        else if ((random_platform_y >= 24 && random_platform_y <= 33) && c_place_num < 4)//10
         {
             platform_y[i] = random_platform_y;
             c_place_num++;
