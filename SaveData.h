@@ -80,5 +80,8 @@ public:
 
 	void SetThanksForPlaying() { UserDefault::getInstance()->setBoolForKey("thanks_for_playing", true); }
 	bool GetThanksForPlaying() { return UserDefault::getInstance()->getBoolForKey("thanks_for_playing"); }
+
+	void SetDoubleJumpUnLock() { UserDefault::getInstance()->setBoolForKey("double_jump_unlock", true); }
+	bool GetDoubleJumpUnLock() { return UserDefault::getInstance()->getBoolForKey("double_jump_unlock"); }
 };
 #endif
