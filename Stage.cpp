@@ -169,9 +169,10 @@ void Stage::AboutTouch()
 bool Stage::onTouchBegan(Touch* touch, Event* event)
 {
     //터치하면 점프 (바닥, 플랫폼 충돌상태 / 스테이지 바뀌는중 확인)
+    //더블점프 언락 여부 확인
     if (mydata.GetDoubleJumpUnLock())
     {
-        if (stage_change && me.double_jump < 3)
+        if (stage_change && me.double_jump < 2)
         {
             me.double_jump++;
             me.Jump();
@@ -180,7 +181,7 @@ bool Stage::onTouchBegan(Touch* touch, Event* event)
     }
     else
     {
-        if ((me.isground || me.isplatform) && stage_change && me.double_jump < 3)
+        if ((me.isground || me.isplatform) && stage_change && me.double_jump < 2)
         {
             me.double_jump++;
             me.Jump();
@@ -233,13 +234,22 @@ void Stage::SetStartValue()
     //더블 점프 잠금해제    
     if (mydata.GetAllocateStageScene() == 2 && !mydata.GetDoubleJumpUnLock())
     {
-        //이미지 먼저 띄우고
+        //unlock 이미지 먼저 띄우고
         unlock_double_jump_sp = Sprite::create("map/unlock_double_jump_all.png");
         unlock_double_jump_sp->setAnchorPoint(Vec2(0, 0));
         unlock_double_jump_sp->setPosition(Vec2(0, 0));
         stage_objlayer->addChild(unlock_double_jump_sp, 4);
-        //일정 시간후에 스케줄 시작
-        this->scheduleOnce(schedule_selector(Stage::DoubleJumpUnLockShow), 5);
+
+        //캐릭터로 설명하고
+        unlock_double_jump.SetMyCharacter(mydata.GetMyCharacter(), mydata.GetDivide(), mydata.GetWidth(), mydata.GetHeight());
+        unlock_double_jump.SetMyPosition(PIXELBLOCK(10), PIXELBLOCK(10));
+        unlock_double_jump.mysp->setScale(1.5f);
+        stage_objlayer->addChild(unlock_double_jump.mysp, 4);
+
+        //캐릭터 더블점프 설명 시키고
+        this->schedule(schedule_selector(Stage::DoubleJumpExplain), 2);
+        //설명 끝나면 일정 시간후에 스케줄 시작
+        this->scheduleOnce(schedule_selector(Stage::DoubleJumpUnLockShow), 8);
 
         mydata.SetDoubleJumpUnLock();
     }
@@ -252,9 +262,49 @@ void Stage::SetStartValue()
 
 void Stage::DoubleJumpUnLockShow(float f)
 {
+    //더블점프 설명 표시 여부
     double_jump_unlock_state = true;
-    stage_objlayer->removeChild(unlock_double_jump_sp);
+
+    //더블점프 설명 그림 지우기
+    stage_objlayer->removeChild(unlock_double_jump_sp);  
+    stage_objlayer->removeChild(unlock_double_jump.mysp);
+
+    //더블점프 스케줄 정지
+    this->unschedule(schedule_selector(Stage::DoubleJumpExplain));
+    this->unschedule(schedule_selector(Stage::DoubleJumpExplainJump));
+    this->unschedule(schedule_selector(Stage::DoubleJumpExplainMove));
+
+    //스케줄 돌리기
     SetSchedule();
+}
+
+void Stage::DoubleJumpExplain(float f)
+{
+    //더블점프 간격 두기용 초기화
+    double_jump_explain_check = 0;
+
+    //더블점프 누르는 간격
+    this->schedule(schedule_selector(Stage::DoubleJumpExplainJump), 0.4f);
+    //더블점프 캐릭터 점프 관련
+    this->schedule(schedule_selector(Stage::DoubleJumpExplainMove));
+}
+
+void Stage::DoubleJumpExplainJump(float f)
+{
+    //더블점프 값 추가
+    double_jump_explain_check++;
+    //두번만 점프하도록
+    if (double_jump_explain_check < 3)
+    {
+        unlock_double_jump.Jump();
+        gmsound.JumpSound();
+    }
+}
+
+void Stage::DoubleJumpExplainMove(float f)
+{   
+    //더블점프용 캐릭터는 점프만 하도록
+    unlock_double_jump.ExplainJump(PIXELBLOCK(10));
 }
 
 //시작 타이머
@@ -422,7 +472,7 @@ void Stage::CrushCheck()
                     apple[i].item_effectsp->setScale(2);
                     stage_objlayer->addChild(apple[i].item_effectsp);
                     remove_item_number = i;
-                    this->scheduleOnce(schedule_selector(Stage::ReMoveItemEffect), 0.08f);
+                    this->scheduleOnce(schedule_selector(Stage::ReMoveItemEffect), 0.1f);
 
                     apple_number--;
                     apple[i].Item_State_Change_True();

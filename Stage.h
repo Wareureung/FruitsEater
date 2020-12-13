@@ -36,6 +36,7 @@ public:
 
     Mycharacter me;
     Mycharacter unlock_new;
+    Mycharacter unlock_double_jump;
 
     PlatForm platform[STAGEPLATFORMMAX];
     PlatForm platform2[STAGEPLATFORMMAX];
@@ -89,6 +90,7 @@ public:
 
     //unlock double jump
     bool double_jump_unlock_state;
+    int double_jump_explain_check;
 
 public:
     static Scene* createScene();
@@ -126,6 +128,9 @@ public:
     void StartGame(float f);
     void ReMoveItemEffect(float f);
     void DoubleJumpUnLockShow(float f);
+    void DoubleJumpExplain(float f);
+    void DoubleJumpExplainJump(float f);
+    void DoubleJumpExplainMove(float f);
 
     void SetStage00();
     void SetStage01();    
