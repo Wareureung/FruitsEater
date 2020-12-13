@@ -50,11 +50,6 @@ void Mycharacter::SetMyCharacter(const std::string pname, float fnumber, float s
 	myanimate = Animate::create(myani);
 	repfor = RepeatForever::create(myanimate);
 	mysp->runAction(repfor);
-
-	double_jump_animate = Animate::create(myani);
-	double_jump_rot = RotateBy::create(0.3f, 360);
-
-	double_jump_add = Spawn::createWithTwoActions(repfor, double_jump_rot);
 }
 
 void Mycharacter::SetMyPosition(float x, float y)
@@ -159,4 +154,51 @@ void Mycharacter::Jump()
 
 	jump_middle = false;
 	jump_hight = 0;
+}
+
+void Mycharacter::ExplainJump(float ground_pos)
+{	
+	//점프
+	if (jump_state)
+	{
+		//중력 효과(상승)
+		if (jump_hight < jump_max && !jump_middle)
+		{
+			jump_hight += 2;
+			//느려지는 부분 설정
+			if (jump_hight == jump_max)
+			{
+				jump_middle = true;
+			}
+		}
+		//올라가는 속도 점점 느려지게
+		else if (jump_middle)
+		{
+			jump_hight -= 1;
+		}
+		//점프 다 하면 떨어지게
+		if (jump_hight <= 0)
+		{
+			jump_state = false;
+		}
+	}
+
+	//떨어질때 아무것도 충돌하지 않을때
+	if (!jump_state && my_pos_y > ground_pos)
+	{
+		jump_hight -= jump_fall_speed;
+	}
+	//떨어지다가 바닥, 플랫폼과 충돌했을때
+	if (!jump_state && my_pos_y <= ground_pos)
+	{
+		my_pos_y = ground_pos;
+		jump_hight = 0;
+		jump_middle = false;
+		double_jump = 0;
+	}
+
+	my_pos_y += jump_hight;
+
+	//위치 수정
+	mysp->setPosition(Vec2(my_pos_x, my_pos_y));
 }

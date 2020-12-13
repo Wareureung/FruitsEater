@@ -15,12 +15,7 @@ public:
 	Animation* myani;
 	Animate* myanimate;
 
-	Animation* double_jump_ani;
-	Animate* double_jump_animate;
-
 	RepeatForever* repfor;
-	RotateBy* double_jump_rot;
-	Spawn* double_jump_add;
 
 	float my_pos_x;
 	float my_pos_y;
@@ -46,5 +41,6 @@ public:
 	void SetMyPosition(float x, float y);
 	void MoveLeftRight();
 	void Jump();
+	void ExplainJump(float ground_pos);
 };
 #endif
