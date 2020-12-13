@@ -63,3 +63,13 @@ void GameSound::TFPSound()
 {
 	tfp_sound = AudioEngine::play2d("sounds/tfp_sound.mp3", false, 0.4f);
 }
+
+void GameSound::BeforeStartSoundA()
+{
+	before_start_a = AudioEngine::play2d("sounds/before_start_a.mp3", false, 0.1f);
+}
+
+void GameSound::BeforeStartSoundB()
+{
+	before_start_b = AudioEngine::play2d("sounds/before_start_b.mp3", false, 0.1f);
+}
