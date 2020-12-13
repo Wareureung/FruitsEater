@@ -32,6 +32,7 @@ public:
     Sprite* stage00_ground;
     Sprite* stage_result;
     Sprite* stage_done_thanks;
+    Sprite* unlock_double_jump_sp;
 
     Mycharacter me;
     Mycharacter unlock_new;
@@ -86,6 +87,9 @@ public:
     bool ten_time_done2;
     int start_timer;
 
+    //unlock double jump
+    bool double_jump_unlock_state;
+
 public:
     static Scene* createScene();
 
@@ -121,6 +125,7 @@ public:
     void GameTimer(float f);
     void StartGame(float f);
     void ReMoveItemEffect(float f);
+    void DoubleJumpUnLockShow(float f);
 
     void SetStage00();
     void SetStage01();    

@@ -36,14 +36,17 @@ bool Stage::init()
 //스케쥴
 void Stage::SetSchedule()
 {
-    //캐릭터 이동, 바닥 충돌 확인
-    this->schedule(schedule_selector(Stage::EveryFrame));
-    //캐릭터 이동 소리
-    this->schedule(schedule_selector(Stage::PlayerRunSoundPlay), 0.2f);    
-    //타이머
-    this->schedule(schedule_selector(Stage::GameTimer), 1.0f);
-    //스타트 3초후 타이머 생성용
-    this->scheduleOnce(schedule_selector(Stage::StartGame), start_timer);
+    if (double_jump_unlock_state)
+    {
+        //캐릭터 이동, 바닥 충돌 확인
+        this->schedule(schedule_selector(Stage::EveryFrame));
+        //캐릭터 이동 소리
+        this->schedule(schedule_selector(Stage::PlayerRunSoundPlay), 0.2f);
+        //타이머
+        this->schedule(schedule_selector(Stage::GameTimer), 1.0f);
+        //스타트 3초후 타이머 생성용
+        this->scheduleOnce(schedule_selector(Stage::StartGame), start_timer);
+    }
 }
 
 //업데이트
@@ -225,17 +228,33 @@ void Stage::SetStartValue()
     //스테이지 확인
     stage_number = mydata.GetAllocateStageScene();
 
+    double_jump_unlock_state = false;
+
     //더블 점프 잠금해제    
     if (mydata.GetAllocateStageScene() == 2 && !mydata.GetDoubleJumpUnLock())
     {
-        //다른 스케줄 정지시키고
-        //여기에 스케줄로 더블 점프 잠금해제 된거 표시해야함
-        
+        //이미지 먼저 띄우고
+        unlock_double_jump_sp = Sprite::create("map/unlock_double_jump_all.png");
+        unlock_double_jump_sp->setAnchorPoint(Vec2(0, 0));
+        unlock_double_jump_sp->setPosition(Vec2(0, 0));
+        stage_objlayer->addChild(unlock_double_jump_sp, 4);
+        //일정 시간후에 스케줄 시작
+        this->scheduleOnce(schedule_selector(Stage::DoubleJumpUnLockShow), 5);
+
         mydata.SetDoubleJumpUnLock();
     }
+    else
+        double_jump_unlock_state = true;
 
     //시작 전 타이머
-    start_timer = 3;
+    start_timer = 4;
+}
+
+void Stage::DoubleJumpUnLockShow(float f)
+{
+    double_jump_unlock_state = true;
+    stage_objlayer->removeChild(unlock_double_jump_sp);
+    SetSchedule();
 }
 
 //시작 타이머
@@ -254,7 +273,10 @@ void Stage::GameTimer(float f)
     if (start_timer > 0)
     {
         start_timer--;
-        gmsound.TimerSound();
+        if (start_timer == 0)
+            gmsound.BeforeStartSoundB();
+        else
+            gmsound.BeforeStartSoundA();
     }
     else if (start_timer <= 0)
     {
@@ -400,7 +422,7 @@ void Stage::CrushCheck()
                     apple[i].item_effectsp->setScale(2);
                     stage_objlayer->addChild(apple[i].item_effectsp);
                     remove_item_number = i;
-                    this->scheduleOnce(schedule_selector(Stage::ReMoveItemEffect), 0.1f);
+                    this->scheduleOnce(schedule_selector(Stage::ReMoveItemEffect), 0.08f);
 
                     apple_number--;
                     apple[i].Item_State_Change_True();
