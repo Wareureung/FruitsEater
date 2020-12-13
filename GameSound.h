@@ -35,6 +35,11 @@ public:
 	//tfp
 	int tfp_sound;
 
+	//before start
+	int before_start_a;
+	int before_start_b;
+
+	//sound volume
 	float sound_volume;
 
 public:
@@ -48,6 +53,8 @@ public:
 	void ReturnSound();
 	void UnLockSound();
 	void TFPSound();
+	void BeforeStartSoundA();
+	void BeforeStartSoundB();
 
 	void StopMainBGSound();
 	void StopAllSound();
