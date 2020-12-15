@@ -83,5 +83,8 @@ public:
 
 	void SetDoubleJumpUnLock() { UserDefault::getInstance()->setBoolForKey("double_jump_unlock", true); }
 	bool GetDoubleJumpUnLock() { return UserDefault::getInstance()->getBoolForKey("double_jump_unlock"); }
+
+	void SetStageSelectExplain() { UserDefault::getInstance()->setBoolForKey("stage_select_ex", true); }
+	bool GetStageSelectExplain() { return UserDefault::getInstance()->getBoolForKey("stage_select_ex"); }
 };
 #endif
