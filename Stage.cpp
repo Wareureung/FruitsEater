@@ -472,7 +472,7 @@ void Stage::CrushCheck()
                     apple[i].item_effectsp->setScale(2);
                     stage_objlayer->addChild(apple[i].item_effectsp);
                     remove_item_number = i;
-                    this->scheduleOnce(schedule_selector(Stage::ReMoveItemEffect), 0.1f);
+                    this->scheduleOnce(schedule_selector(Stage::ReMoveItemEffect), 0.09f);
 
                     apple_number--;
                     apple[i].Item_State_Change_True();
