@@ -17,8 +17,7 @@ bool StageSelectScene::init()
 	{
 		return false;
 	}
-
-	SetSpriteSelect();
+	SetSpriteSelect();	
 
 	return true;
 }
@@ -26,8 +25,6 @@ bool StageSelectScene::init()
 void StageSelectScene::SetSpriteSelect()
 {
 	gamestart_state = false;
-
-	//stage_select_sound.SetSound();
 
 	stage_select_sp = Sprite::create("map/stage_select.png");
 	stage_select_sp->setAnchorPoint(Vec2(0, 0));
@@ -38,17 +35,6 @@ void StageSelectScene::SetSpriteSelect()
 	loading_sp->setAnchorPoint(Vec2(0, 0));
 	loading_sp->setPosition(Vec2(-1000, -1000));
 	this->addChild(loading_sp, 5);
-
-	//bakc to menu
-	back_to_menu = MenuItemImage::create("map/shop_goback.png", "map/shop_goback.png", CC_CALLBACK_1(StageSelectScene::BackToMenu, this));
-	back_to_menu->setAnchorPoint(Vec2(0, 0));
-	back_to_menu->setPosition(Vec2(PIXELBLOCK(10.5f), PIXELBLOCK(1)));
-	back_to_menu->setScale(1.5f);
-
-	stage_select_menu = Menu::create(back_to_menu, nullptr);
-	stage_select_menu->setAnchorPoint(Vec2(0, 0));
-	stage_select_menu->setPosition(Vec2(0, 0));
-	this->addChild(stage_select_menu);
 
 	//select fruit
 	stage_select_fruit[0].SetItem(PIXELBLOCK(3), 540, "item/item_apple.png");
@@ -67,6 +53,61 @@ void StageSelectScene::SetSpriteSelect()
 	}
 	stage_select_fruit[0].GetItemMove(PIXELBLOCK(3), 540);
 
+	for (int i = 0; i < 6; i++)
+		test[i] = mydata.GetStageState(i);
+
+	plant[0].SetSpriteMonster("character/plant_idle.png", 11, 44, 42, 4.5f, 30.2f, 0.08f);
+	this->addChild(plant[0].monstersp);
+	if (mydata.GetStageState(0))
+		plant[1].SetSpriteMonster("character/plant_idle.png", 11, 44, 42, 18.5f, 30.2f, 0.08f);
+	if (mydata.GetStageState(1))
+		plant[2].SetSpriteMonster("character/plant_idle.png", 11, 44, 42, 4.5f, 17.2f, 0.08f);
+	if (mydata.GetStageState(2))
+		plant[3].SetSpriteMonster("character/plant_idle.png", 11, 44, 42, 18.5f, 17.2f, 0.08f);
+	if (mydata.GetStageState(3))
+		plant[4].SetSpriteMonster("character/plant_idle.png", 11, 44, 42, 4.5f, 4.2f, 0.08f);
+	if (mydata.GetStageState(4))
+		plant[5].SetSpriteMonster("character/plant_idle.png", 11, 44, 42, 18.5f, 4.2f, 0.08f);
+
+	for (int i = 1; i < 6; i++)
+	{
+		if (mydata.GetStageState(i - 1))
+			this->addChild(plant[i].monstersp);
+	}
+
+	//첫진입 확인
+	if (!mydata.GetStageSelectExplain())
+	{
+		ExplainStageSelect();
+		this->scheduleOnce(schedule_selector(StageSelectScene::ExplainStageSelect), 4);
+	}
+	else
+		DrawTouchPlace();
+}
+
+void StageSelectScene::ExplainStageSelect()
+{
+	//스테이지 선택 설명
+	stage_select_hand_bg = Sprite::create("map/stage_select_hand_bg.png");
+	stage_select_hand_bg->setAnchorPoint(Vec2(0, 0));
+	stage_select_hand_bg->setPosition(Vec2(0, 0));
+	this->addChild(stage_select_hand_bg, 3);
+
+	stage_select_hand = Sprite::create("map/stage_select_hand.png");
+	stage_select_hand->setAnchorPoint(Vec2(0, 0));
+	stage_select_hand->setPosition(Vec2(PIXELBLOCK(7), 550));
+	stage_select_hand->setFlippedX(true);
+	this->addChild(stage_select_hand, 4);
+
+	hand_move_back = MoveBy::create(0.5f, Vec2(-30, 0));
+	hand_move_front = MoveBy::create(0.5f, Vec2(30, 0));
+	hand_action_seq = Sequence::create(hand_move_back, hand_move_front, nullptr);
+	hand_rep = Repeat::create(hand_action_seq, 5);
+	stage_select_hand->runAction(hand_rep);
+}
+
+void StageSelectScene::DrawTouchPlace()
+{
 	//select menu
 	for (int i = 0; i < 6; i++)
 	{
@@ -75,7 +116,7 @@ void StageSelectScene::SetSpriteSelect()
 		stage_go_sp[i]->setPosition(Vec2(-200, -200));
 		stage_go_sp[i]->setTag(i);
 	}
-	
+
 	stage_go_sp[0]->setPosition(Vec2(PIXELBLOCK(3), 540));
 	if (mydata.GetStageState(0))
 	{
@@ -102,33 +143,35 @@ void StageSelectScene::SetSpriteSelect()
 		stage_go_sp[5]->setPosition(Vec2(PIXELBLOCK(17), 136));
 		stage_select_fruit[5].GetItemMove(PIXELBLOCK(17), 136);
 	}
-		
+
 	all_select_menu = Menu::create(stage_go_sp[0], stage_go_sp[1], stage_go_sp[2], stage_go_sp[3], stage_go_sp[4], stage_go_sp[5], nullptr);
 	all_select_menu->setAnchorPoint(Vec2(0, 0));
 	all_select_menu->setPosition(Vec2(0, 0));
 	this->addChild(all_select_menu);
 
-	for (int i = 0; i < 6; i++)
-		test[i] = mydata.GetStageState(i);
+	//bakc to menu
+	back_to_menu = MenuItemImage::create("map/shop_goback.png", "map/shop_goback.png", CC_CALLBACK_1(StageSelectScene::BackToMenu, this));
+	back_to_menu->setAnchorPoint(Vec2(0, 0));
+	back_to_menu->setPosition(Vec2(PIXELBLOCK(10.5f), PIXELBLOCK(1)));
+	back_to_menu->setScale(1.5f);
 
-	plant[0].SetSpriteMonster("character/plant_idle.png", 11, 44, 42, 4.5f, 30.2f, 0.08f);
-	this->addChild(plant[0].monstersp);
-	if (mydata.GetStageState(0))
-		plant[1].SetSpriteMonster("character/plant_idle.png", 11, 44, 42, 18.5f, 30.2f, 0.08f);
-	if (mydata.GetStageState(1))
-		plant[2].SetSpriteMonster("character/plant_idle.png", 11, 44, 42, 4.5f, 17.2f, 0.08f);
-	if (mydata.GetStageState(2))
-		plant[3].SetSpriteMonster("character/plant_idle.png", 11, 44, 42, 18.5f, 17.2f, 0.08f);
-	if (mydata.GetStageState(3))
-		plant[4].SetSpriteMonster("character/plant_idle.png", 11, 44, 42, 4.5f, 4.2f, 0.08f);
-	if (mydata.GetStageState(4))
-		plant[5].SetSpriteMonster("character/plant_idle.png", 11, 44, 42, 18.5f, 4.2f, 0.08f);
+	stage_select_menu = Menu::create(back_to_menu, nullptr);
+	stage_select_menu->setAnchorPoint(Vec2(0, 0));
+	stage_select_menu->setPosition(Vec2(0, 0));
+	this->addChild(stage_select_menu);
+}
 
-	for (int i = 1; i < 6; i++)
-	{
-		if (mydata.GetStageState(i - 1))
-			this->addChild(plant[i].monstersp);
-	}
+void StageSelectScene::ExplainStageSelect(float f)
+{
+	//첫진입 확인후 상태변경
+	mydata.SetStageSelectExplain();
+
+	//배경, 손가락 제거
+	this->removeChild(stage_select_hand_bg);
+	this->removeChild(stage_select_hand);
+
+	//터치 영역 그리기
+	DrawTouchPlace();
 }
 
 void StageSelectScene::SelectStage(Ref* pSender)

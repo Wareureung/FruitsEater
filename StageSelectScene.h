@@ -27,6 +27,13 @@ public:
 
 	Sprite* stage_select_sp;
 	Sprite* loading_sp;
+	Sprite* stage_select_hand;
+	Sprite* stage_select_hand_bg;
+
+	MoveBy* hand_move_back;
+	MoveBy* hand_move_front;
+	Repeat* hand_rep;
+	Sequence* hand_action_seq;
 
 	TouchEffect boom_effect;
 
@@ -52,12 +59,17 @@ public:
 	TransitionScene* ChangeScene(float time, Scene* scene);
 
 	void SetSpriteSelect();
+	void DrawTouchPlace();
+	void ExplainStageSelect();
+
 	void SelectStageMotion(float f);
 	void NextStageGo(float f);
 	void RemoveEffect(float f);
+	void ExplainStageSelect(float f);
 
 	void SelectStage(Ref* pSender);
 	void BackToMenu(Ref* pSender);	
+	
 
 	CREATE_FUNC(StageSelectScene);
 };
